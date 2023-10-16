@@ -5,7 +5,7 @@ class DynamicArray {
     // Your code here
     this.capacity = defaultSize;
     this.length = 0;
-    this.data = new Array(defaultSize);
+    this.data = new Array(this.capacity);
   }
 
   read(index) {
@@ -18,62 +18,68 @@ class DynamicArray {
 
     // Your code here
     this.data[this.length] = val;
-    if (this.length + 1 > this.capacity) this.resize();
-    return ++this.length;
+    this.length++;
+    if (this.length > this.capacity) {
+      this.resize();
+    }
   }
 
 
   pop() {
 
     // Your code here
-    if (this.length <= 0) return undefined;
-    let lastValidElementIndex = null;
-    for (let i = this.data.length; i >= 0; i--) {
-      if (this.data[i]) {
-        lastValidElementIndex = i;
-        break;
-      }
-    }
-
-    this.data.splice(lastValidElementIndex, 1);
-    return this.length--;
+    let returnValue = this.data[this.length - 1];
+    this.data[this.length - 1] = undefined;
+    this.length--;
+    if (this.length < 0) this.length = 0;
+    return returnValue;
   }
 
   shift() {
 
     // Your code here
-    if (this.length <= 0) return undefined;
-    let element = this.data[0]
-    this.data.splice(0, 1);
+    let returnValue = this.data[0];
+    for (let i = 0; i < this.data.length - 1; i++) {
+      this.data[i] = this.data[i + 1];
+    }
     this.length--;
-    return element;
+    if (this.length < 0) this.length = 0;
+    return returnValue;
   }
 
   unshift(val) {
 
     // Your code here
-    if (this.length + 1 > this.capacity) this.resize();
-    for (let i = this.data.length - 1; i >= 0; i--) {
+    for (let i = this.data.length; i >= 1; i--) {
       this.data[i] = this.data[i - 1];
     }
     this.data[0] = val;
-    return ++this.length;
+    this.length++;
+    if (this.length > this.capacity) {
+      this.resize();
+    }
   }
 
   indexOf(val) {
 
     // Your code here
-    return this.data.findIndex(element => element === val);
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.data[i] === val) return i;
+    }
+    return -1;
   }
 
   resize() {
 
     // Your code here
-    this.capacity = this.capacity * 2;
-    this.data.length = this.capacity;
+    let newArray = new Array(this.capacity*2);
+    for (let i = 0; i < this.length; i++) {
+      newArray[i] = this.data[i];
+    }
+    this.data = newArray;
+    this.capacity *= 2;
   }
 
 }
-
 
 module.exports = DynamicArray;
